@@ -10,6 +10,22 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="HtY-yV-NS6">
+            <objects>
+                <navigationController id="nyX-pU-UCS" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="vwQ-41-zPi">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BV1-FR-VrT" kind="relationship" relationship="rootViewController" id="2uW-x9-z32"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2hl-EM-JUD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="946" y="21"/>
+        </scene>
         <!--AR View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
@@ -22,7 +38,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="862"/>
                             </arscnView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="fill" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vFV-Ag-n0i">
-                                <rect key="frame" x="314" y="62" width="80" height="36"/>
+                                <rect key="frame" x="314" y="106" width="80" height="36"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="36" id="ENX-Jt-Jvc"/>
@@ -32,11 +48,11 @@
                                 <color key="tintColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
                                 <state key="normal" title="Models"/>
                                 <connections>
-                                    <segue destination="br1-kw-Fa9" kind="show" id="2nE-3c-o6F"/>
+                                    <segue destination="br1-kw-Fa9" kind="show" identifier="SelectModel" id="2nE-3c-o6F"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="prR-Y9-af6">
-                                <rect key="frame" x="20" y="62" width="80" height="36"/>
+                                <rect key="frame" x="20" y="106" width="80" height="36"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="36" id="7ic-iP-s4y"/>
@@ -45,9 +61,6 @@
                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="16"/>
                                 <color key="tintColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
                                 <state key="normal" title="Home"/>
-                                <connections>
-                                    <segue destination="uXu-3f-yeI" kind="show" id="Z3i-y1-8Ba"/>
-                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -63,10 +76,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="fQZ-KI-GVf"/>
                     </view>
-                    <navigationItem key="navigationItem" id="dlR-Q5-pGe">
-                        <barButtonItem key="leftBarButtonItem" title="Home" id="hOs-bd-HhM"/>
-                        <barButtonItem key="rightBarButtonItem" title="+ Model" id="Nrq-XP-Qz1"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="dlR-Q5-pGe"/>
                     <connections>
                         <outlet property="addButton" destination="vFV-Ag-n0i" id="alP-cY-Pg3"/>
                         <outlet property="homeButton" destination="prR-Y9-af6" id="q1L-A1-aLk"/>
@@ -75,7 +85,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="760.86956521739137" y="-283.25892857142856"/>
+            <point key="canvasLocation" x="1800" y="21"/>
         </scene>
         <!--Model List Controller-->
         <scene sceneID="mPi-Hm-9NJ">
@@ -85,22 +95,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <navigationBar key="tableHeaderView" contentMode="scaleToFill" id="frK-LR-vE8">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <items>
-                                <navigationItem id="AxJ-sT-IIQ">
-                                    <barButtonItem key="leftBarButtonItem" title="Done" id="vAk-MB-Gan">
-                                        <connections>
-                                            <segue destination="BV1-FR-VrT" kind="show" id="Lvl-gQ-BAt"/>
-                                        </connections>
-                                    </barButtonItem>
-                                </navigationItem>
-                            </items>
-                        </navigationBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ModelViewCell" rowHeight="161" id="JOB-ns-Czz" customClass="ModelViewCell" customModule="AR_Design" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="72" width="414" height="161"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="161"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JOB-ns-Czz" id="j0U-lY-NYX">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="160.5"/>
@@ -122,7 +119,10 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
                                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <state key="normal" title="Add"/>
+                                            <state key="normal" title="Use Item"/>
+                                            <connections>
+                                                <action selector="buttonPressed:" destination="br1-kw-Fa9" eventType="touchUpInside" id="aeU-3R-ylo"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                 </tableViewCellContentView>
@@ -140,7 +140,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oDU-yo-4HY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1547.8260869565217" y="-283.25892857142856"/>
+            <point key="canvasLocation" x="2678" y="21"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="MzF-ZV-67r">
@@ -155,7 +155,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <connections>
-                                    <segue destination="BV1-FR-VrT" kind="show" id="izE-Si-NdC"/>
+                                    <segue destination="nyX-pU-UCS" kind="show" id="PYQ-Ke-hkO"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -166,7 +166,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oHy-ea-ZqG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-30" y="21"/>
+            <point key="canvasLocation" x="100" y="21"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="whU-nN-1Vl">
@@ -185,8 +185,4 @@
             <point key="canvasLocation" x="-742" y="21"/>
         </scene>
     </scenes>
-    <inferredMetricsTieBreakers>
-        <segue reference="Z3i-y1-8Ba"/>
-        <segue reference="Lvl-gQ-BAt"/>
-    </inferredMetricsTieBreakers>
 </document>

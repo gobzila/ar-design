@@ -10,12 +10,29 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ARController: UIViewController, ARSCNViewDelegate {
+extension UIButton {
+    func applyDesign(){
+        self.layer.backgroundColor = UIColor.white.cgColor
+        self.layer.cornerRadius = self.frame.height / 2;
+        self.setTitleColor(UIColor.darkGray, for: .normal)
+        self.layer.shadowColor = UIColor.black.cgColor
+        self.layer.shadowRadius = 4
+        self.layer.shadowOpacity = 0.6
+        self.layer.shadowOffset = CGSize(width: 0, height: 0)
+    }
+}
+
+public protocol DataBackDelegate: class {
+    func saveModel (model : String)
+}
+
+class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
+    
     @IBOutlet var addButton: UIButton!
     @IBOutlet weak var homeButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
     
-    var model: String? = "art.scnassets/ship.scn"
+    var model: String?
     var currentNode: SCNNode!
     var firstAngleY: Float?
     var planeGeometry: SCNPlane!
@@ -211,7 +228,7 @@ class ARController: UIViewController, ARSCNViewDelegate {
             let result = hitResults.first!
             var newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: result.worldTransform.columns.3.y + 0.05, z: result.worldTransform.columns.3.z)
             
-            guard let modelScene = SCNScene(named: "art.scnassets/ship.scn") else { return }
+            guard let modelScene = SCNScene(named: model!) else { return }
             let modelNode = SCNNode()
             print(getModelDimensions(modelNode))
             let modelSceneChildNodes = modelScene.rootNode.childNodes
@@ -239,7 +256,7 @@ class ARController: UIViewController, ARSCNViewDelegate {
         
         if hitResults.count > 0 {
             let result = hitResults.first!
-            var newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: node.position.y, z: result.worldTransform.columns.3.z)
+            let newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: node.position.y, z: result.worldTransform.columns.3.z)
             print(getModelDimensions(node))
 
 //            newLocation.z -= getModelDimensions(node).z / 2
@@ -273,16 +290,21 @@ class ARController: UIViewController, ARSCNViewDelegate {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         
     }
-}
-
-extension UIButton {
-    func applyDesign(){
-        self.layer.backgroundColor = UIColor.white.cgColor
-        self.layer.cornerRadius = self.frame.height / 2;
-        self.setTitleColor(UIColor.darkGray, for: .normal)
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowRadius = 4
-        self.layer.shadowOpacity = 0.6
-        self.layer.shadowOffset = CGSize(width: 0, height: 0)
+    
+    func saveModel(model: String) {
+        self.model = model
+    }
+    
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        
+        if segue.identifier == "SelectModel" {
+            guard let listController = segue.destination as? ModelListController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            listController.dataBackDelegate = self
+        }
     }
 }
