@@ -14,7 +14,7 @@ extension UIButton {
     func applyDesign(){
         self.layer.backgroundColor = UIColor.white.cgColor
         self.layer.cornerRadius = self.frame.height / 2;
-        self.setTitleColor(UIColor.darkGray, for: .normal)
+        self.setTitleColor(UIColor.black, for: .normal)
         self.layer.shadowColor = UIColor.black.cgColor
         self.layer.shadowRadius = 4
         self.layer.shadowOpacity = 0.6
@@ -50,7 +50,6 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         addButton.applyDesign()
         homeButton.applyDesign()
 
-        
         // Show statistics such as fps and timing information
 //        sceneView.showsStatistics = true
         

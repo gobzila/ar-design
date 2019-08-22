@@ -103,32 +103,52 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="160.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dQo-el-xYX">
-                                            <rect key="frame" x="0.0" y="0.0" width="213" height="161"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dQo-el-xYX">
+                                            <rect key="frame" x="10" y="5" width="200" height="150.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="200" id="MUG-jk-eJo"/>
+                                            </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZdK-OD-PS1">
-                                            <rect key="frame" x="221" y="16" width="173" height="71"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="On7-kD-Bkx">
-                                            <rect key="frame" x="221" y="120" width="173" height="30"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="On7-kD-Bkx">
+                                            <rect key="frame" x="221" y="111" width="180" height="39"/>
                                             <color key="backgroundColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="39" id="1TG-gt-aT8"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <state key="normal" title="Use Item"/>
                                             <connections>
                                                 <action selector="buttonPressed:" destination="br1-kw-Fa9" eventType="touchUpInside" id="aeU-3R-ylo"/>
                                             </connections>
                                         </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZdK-OD-PS1">
+                                            <rect key="frame" x="229" y="10" width="172" height="71"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="71" id="cr4-8u-TYe"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="24"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="highlightedColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </label>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="ZdK-OD-PS1" firstAttribute="top" secondItem="j0U-lY-NYX" secondAttribute="topMargin" constant="-1" id="6O1-8g-UH6"/>
+                                        <constraint firstItem="On7-kD-Bkx" firstAttribute="bottom" secondItem="j0U-lY-NYX" secondAttribute="bottomMargin" id="B13-Jz-MDS"/>
+                                        <constraint firstItem="dQo-el-xYX" firstAttribute="top" secondItem="j0U-lY-NYX" secondAttribute="topMargin" constant="-6" id="N6u-04-KBg"/>
+                                        <constraint firstItem="On7-kD-Bkx" firstAttribute="top" secondItem="ZdK-OD-PS1" secondAttribute="bottom" constant="30" id="XwW-x1-rqs"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="ZdK-OD-PS1" secondAttribute="trailing" constant="-7" id="Z7I-1N-ege"/>
+                                        <constraint firstItem="dQo-el-xYX" firstAttribute="leading" secondItem="j0U-lY-NYX" secondAttribute="leadingMargin" constant="-10" id="eUQ-oq-3i2"/>
+                                        <constraint firstItem="On7-kD-Bkx" firstAttribute="trailing" secondItem="ZdK-OD-PS1" secondAttribute="trailing" id="eZ0-xX-XAy"/>
+                                        <constraint firstItem="On7-kD-Bkx" firstAttribute="leading" secondItem="dQo-el-xYX" secondAttribute="trailing" constant="11" id="jHU-0N-3m2"/>
+                                        <constraint firstItem="dQo-el-xYX" firstAttribute="centerY" secondItem="j0U-lY-NYX" secondAttribute="centerY" id="sew-rx-9QS"/>
+                                        <constraint firstItem="ZdK-OD-PS1" firstAttribute="leading" secondItem="dQo-el-xYX" secondAttribute="trailing" constant="19" id="tGN-LT-3En"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="nameLabel" destination="ZdK-OD-PS1" id="hdp-0I-kSt"/>
                                     <outlet property="photoView" destination="dQo-el-xYX" id="Qmt-2d-eXm"/>
+                                    <outlet property="useButton" destination="On7-kD-Bkx" id="eLm-rN-qSt"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -140,7 +160,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oDU-yo-4HY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2678" y="21"/>
+            <point key="canvasLocation" x="2652" y="21"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="MzF-ZV-67r">
