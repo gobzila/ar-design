@@ -9,6 +9,12 @@
 import UIKit
 import SceneKit
 import ARKit
+import QuartzCore
+
+let DETECT_MESSAGE = "Wait for horizontal plane detection"
+let TAP_MESSAGE = "Tap to place "
+let SELECT_MESSAGE = "Select a model"
+
 
 extension UIButton {
     func applyDesign(){
@@ -22,20 +28,39 @@ extension UIButton {
     }
 }
 
+extension UILabel {
+    func show(message: String) {
+        DispatchQueue.main.async {
+            self.text = message
+            self.isHidden = false
+        }
+    }
+    
+    func hide() {
+        self.text = ""
+        self.isHidden = true
+    }
+}
+
 public protocol DataBackDelegate: class {
-    func saveModel (model : String)
+    func setModel(model : Model)
 }
 
 class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     
+
+    @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet var addButton: UIButton!
     @IBOutlet weak var homeButton: UIButton!
+    @IBOutlet weak var confirmButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
     
-    var model: String?
+    var models = [String]()
+    var currentModel: Model?
     var currentNode: SCNNode!
     var firstAngleY: Float?
     var planeGeometry: SCNPlane!
+    var isPlaneVisible = true
     let planeIdentifiers = [UUID]()
     var anchors = [ARAnchor]()
     var sceneLight:SCNLight!
@@ -44,16 +69,14 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        applyDesign()
+        
         // Set the view's delegate
         sceneView.delegate = self
-        
-        addButton.applyDesign()
-        homeButton.applyDesign()
-
         // Show statistics such as fps and timing information
 //        sceneView.showsStatistics = true
-        
         sceneView.autoenablesDefaultLighting = false
+        sceneView.debugOptions = [.showWireframe, .showBoundingBoxes, ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
         
         let longPressGesturerecogn = UILongPressGestureRecognizer(target: self, action: #selector(detectModel(press:)))
         longPressGesturerecogn.minimumPressDuration = 1
@@ -62,13 +85,11 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         
         // Create a new scene
         let scene = SCNScene()
-        
         // Set the scene to the view
         sceneView.scene = scene
         
         sceneLight = SCNLight()
         sceneLight.type = .omni
-        
         let lightNode = SCNNode()
         lightNode.light = sceneLight
         lightNode.position = SCNVector3(x:0, y:10, z:2)
@@ -98,15 +119,18 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if currentModel == nil { return }
+        
         let touch = touches.first
         let location = touch?.location(in: sceneView)
-        if model == nil { return }
         
-        addNodeAtLocation(location: location!)
+        addModelAtLocation(location: location!, model: currentModel!)
+        currentModel = nil
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if currentNode == nil { return }
+        
         let touch = touches.first
         let location = touch?.location(in: sceneView)
         
@@ -128,18 +152,19 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         if let planeAnchor = anchor as? ARPlaneAnchor {
             node = SCNNode()
             planeGeometry = SCNPlane(width: CGFloat(planeAnchor.extent.x), height: CGFloat(planeAnchor.extent.z))
-            planeGeometry.firstMaterial?.diffuse.contents = UIColor.white.withAlphaComponent(0.4)
-
+            updatePlaneVisibility()
+            
             let planeNode = SCNNode(geometry: planeGeometry)
             planeNode.position = SCNVector3(x: planeAnchor.center.x, y: 0, z: planeAnchor.center.z)
             planeNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2, 1, 0, 0)
-            
-            updateMaterial()
+            updatePlaneMaterial()
             
             node?.addChildNode(planeNode)
             anchors.append(planeAnchor)
+            if anchors.count == 1 {
+                messageLabel.show(message: SELECT_MESSAGE)
+            }
         }
-        
         return node
     }
     
@@ -153,7 +178,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
                     if let plane = planeNode.geometry as? SCNPlane {
                         plane.width = CGFloat(planeAnchor.extent.x)
                         plane.height = CGFloat(planeAnchor.extent.z)
-                        updateMaterial()
+                        updatePlaneMaterial()
                     }
                 }
             }
@@ -161,12 +186,12 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     }
     
     @objc func detectModel(press: UILongPressGestureRecognizer) {
-        if (currentNode != nil || model != nil) { return }
+        if (currentNode != nil || currentModel != nil) { return }
         let location = press.location(in: sceneView)
         let node = getNodeAtLocation(location: location)
-        if node != nil {
-            updateModelAndMaterial(modelNode: node);
-        }
+//        if node != nil {
+//            updatePlaneVisibility(modelNode: node);
+//        }
     }
     
     @objc func rotateModel(_ gesture: UIRotationGestureRecognizer) {
@@ -174,7 +199,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         let rotation = Float(gesture.rotation)
 
         if gesture.state == .began {
-            print(getModelDimensions(currentNode))
+//            print(getModelDimensions(currentNode))
             firstAngleY = currentNode.eulerAngles.y
             currentNode.eulerAngles.y = firstAngleY! - rotation
         }
@@ -187,20 +212,17 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         }
     }
     
-    func updateMaterial() {
+    func updatePlaneMaterial() {
         let material = self.planeGeometry.materials.first!
         
         material.diffuse.contentsTransform = SCNMatrix4MakeScale(Float(self.planeGeometry.width), Float(self.planeGeometry.height), 1)
     }
     
-    func updateModelAndMaterial(modelNode: SCNNode? = nil) {
-        model = nil
-        if modelNode == nil {
-            planeGeometry.firstMaterial?.diffuse.contents = UIColor.white.withAlphaComponent(0)
-            currentNode = nil
+    func updatePlaneVisibility() {
+        if isPlaneVisible {
+            planeGeometry.firstMaterial?.diffuse.contents = UIImage(named: "background")!.resizableImage(withCapInsets: .zero)
         } else {
-            planeGeometry.firstMaterial?.diffuse.contents = UIColor.white.withAlphaComponent(0.4)
-            currentNode = modelNode
+            planeGeometry.firstMaterial?.diffuse.contents = UIColor.white.withAlphaComponent(0)
         }
     }
     
@@ -209,8 +231,8 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
 
         if !hitResult.isEmpty {
             let result = hitResult.first!
-            if let model = result.node.geometry {
-                if !(model is SCNPlane) {
+            if let currentModel = result.node.geometry {
+                if !(currentModel is SCNPlane) {
                     return result.node
                 }
             }
@@ -218,34 +240,26 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         return nil
     }
     
-    func addNodeAtLocation(location: CGPoint) {
+    func addModelAtLocation(location: CGPoint, model: Model) {
         guard anchors.count > 0 else { print("anchors are not created yet!"); return }
         
         let hitResults = sceneView.hitTest(location, types: .existingPlaneUsingExtent)
+        guard let hitTestResult = hitResults.first else { return }
         
-        if hitResults.count > 0 {
-            let result = hitResults.first!
-            var newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: result.worldTransform.columns.3.y + 0.05, z: result.worldTransform.columns.3.z)
-            
-            guard let modelScene = SCNScene(named: model!) else { return }
-            let modelNode = SCNNode()
-            print(getModelDimensions(modelNode))
-            let modelSceneChildNodes = modelScene.rootNode.childNodes
-            
-            for childNode in modelSceneChildNodes {
-                modelNode.addChildNode(childNode)
-            }
-            
-            newLocation.z += getModelDimensions(modelNode).z/2
-            
-            modelNode.position = newLocation
-            
-            currentNode = modelNode
-            
-            sceneView.scene.rootNode.addChildNode(modelNode)
-            
-            updateModelAndMaterial()
-        }
+        let columns = hitTestResult.worldTransform.columns.3
+        let x = columns.x
+        let y = columns.y + 0.05
+        let z = columns.z
+        
+        guard let modelScene = SCNScene(named: model.path),
+            let modelNode = modelScene.rootNode.childNode(withName: model.id, recursively: false)
+            else { return }
+        
+        modelNode.position = SCNVector3(x,y,z)
+        sceneView.scene.rootNode.addChildNode(modelNode)
+        currentNode = modelNode
+        messageLabel.hide()
+        confirmButton.isHidden = false
     }
     
     func updateNodeAtLocation(location: CGPoint, node: SCNNode) {
@@ -255,26 +269,47 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         
         if hitResults.count > 0 {
             let result = hitResults.first!
-            let newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: node.position.y, z: result.worldTransform.columns.3.z)
-            print(getModelDimensions(node))
+            var newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: node.position.y, z: result.worldTransform.columns.3.z)
+            print(newLocation.z)
+            print(getModelDimensions(node).z)
 
-//            newLocation.z -= getModelDimensions(node).z / 2
-            
+            newLocation.z += getModelDimensions(node).z
+            print(newLocation.z)
+
             node.simdPosition = float3(newLocation.x, newLocation.y, newLocation.z)
             
-//          updateModelAndMaterial()
+//          updatePlaneVisibility()
         }
     }
     
     func getModelDimensions(_ node: SCNNode) -> SCNVector3 {
         let (minVec, maxVec) = node.boundingBox
-        let x = maxVec.y - minVec.y
-        let y = maxVec.x - minVec.x
-        let z = maxVec.z - minVec.z
+        let x = (maxVec.y - minVec.y) * node.scale.y
+        let y = (maxVec.x - minVec.x) * node.scale.x
+        let z = (maxVec.z - minVec.z) * node.scale.z
         
         return SCNVector3(x: x, y: y, z: z)
     }
  
+    @IBAction func onConfirmButtonPress(_ sender: Any) {
+        currentNode = nil
+        isPlaneVisible = false
+        updatePlaneVisibility()
+        messageLabel.hide()
+        confirmButton.isHidden = true
+    }
+    
+    func applyDesign() {
+        addButton.applyDesign()
+        homeButton.applyDesign()
+        confirmButton.applyDesign()
+        confirmButton.isHidden = true
+        
+        messageLabel.backgroundColor = UIColor(white: 1, alpha: 0.7)
+        messageLabel.layer.cornerRadius = 10
+        messageLabel.show(message: DETECT_MESSAGE)
+    }
+    
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
         
@@ -290,8 +325,11 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         
     }
     
-    func saveModel(model: String) {
-        self.model = model
+    func setModel(model: Model) {
+        self.currentModel = model
+        messageLabel.show(message: TAP_MESSAGE + model.name + " model")
+        isPlaneVisible = true
+        updatePlaneVisibility()
     }
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation

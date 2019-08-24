@@ -26,8 +26,14 @@ class ModelListController: UITableViewController{
     }
     
     func loadModels() {
-        let image = UIImage(named: "wooden-coffe-table")!
-        let model = Model(id: "wooden-coffe-table", name: "Wooden Coffe Table", image: image, path: "art.scnassets/wooden-coffe-table.scn")!
+        var image = UIImage(named: "wooden-coffe-table")!
+        var model = Model(id: "wooden-coffe-table", name: "Wooden Coffe Table", image: image, path: "art.scnassets/wooden-coffe-table.scn")!
+        models.append(model)
+        image = UIImage(named: "coffe-table")!
+        model = Model(id: "coffe-table", name: "Coffe Table", image: image, path: "art.scnassets/coffe-table.scn")!
+        models.append(model)
+        image = UIImage(named: "ship")!
+        model = Model(id: "ship", name: "Ship", image: image, path: "art.scnassets/ship.scn")!
         models.append(model)
     }
     
@@ -58,7 +64,7 @@ class ModelListController: UITableViewController{
         let cell = button.superview!.superview! as! ModelViewCell
         let indexPath = tableView.indexPath(for: cell)
         let selectedModel = models[indexPath!.row]
-        dataBackDelegate?.saveModel(model: selectedModel.path)
+        dataBackDelegate?.setModel(model: selectedModel)
         navigationController?.popViewController(animated: true)
     }
     

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import os.log
 
-class Model: NSObject, NSCoding {
+public class Model: NSObject, NSCoding {
     
     var id: String
     var name: String
@@ -27,22 +27,20 @@ class Model: NSObject, NSCoding {
         self.path = path
     }
     
-    func encode(with coder: NSCoder) {
+    public func encode(with coder: NSCoder) {
         coder.encode(id, forKey: "id")
         coder.encode(name, forKey: "name")
         coder.encode(image, forKey: "image")
         coder.encode(path, forKey: "path")
     }
     
-    required convenience init?(coder aDecoder: NSCoder) {
+    required convenience public init?(coder aDecoder: NSCoder) {
         let id = aDecoder.decodeObject(forKey: "id") as? String
         let name = aDecoder.decodeObject(forKey: "name") as? String
         let image = aDecoder.decodeObject(forKey: "image") as? UIImage
         let path = aDecoder.decodeObject(forKey: "path") as? String
         
         self.init(id: id!, name: name!, image: image!, path: path!)
-        
     }
-    
 }
 
