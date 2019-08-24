@@ -48,7 +48,6 @@ public protocol DataBackDelegate: class {
 
 class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     
-
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet var addButton: UIButton!
     @IBOutlet weak var homeButton: UIButton!
@@ -63,6 +62,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     var isPlaneVisible = true
     let planeIdentifiers = [UUID]()
     var anchors = [ARAnchor]()
+    var planes = [SCNPlane]()
     var sceneLight:SCNLight!
     
     
@@ -152,6 +152,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         if let planeAnchor = anchor as? ARPlaneAnchor {
             node = SCNNode()
             planeGeometry = SCNPlane(width: CGFloat(planeAnchor.extent.x), height: CGFloat(planeAnchor.extent.z))
+            planes.append(planeGeometry)
             updatePlaneVisibility()
             
             let planeNode = SCNNode(geometry: planeGeometry)
@@ -216,15 +217,16 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     
     func updatePlaneMaterial() {
         let material = self.planeGeometry.materials.first!
-        
         material.diffuse.contentsTransform = SCNMatrix4MakeScale(Float(self.planeGeometry.width), Float(self.planeGeometry.height), 1)
     }
     
     func updatePlaneVisibility() {
-        if isPlaneVisible {
-            planeGeometry.firstMaterial?.diffuse.contents = UIImage(named: "background")!.resizableImage(withCapInsets: .zero)
-        } else {
-            planeGeometry.firstMaterial?.diffuse.contents = UIColor.white.withAlphaComponent(0)
+        for plane in planes {
+            if isPlaneVisible {
+                plane.firstMaterial?.diffuse.contents = UIImage(named: "background")!.resizableImage(withCapInsets: .zero)
+            } else {
+                plane.firstMaterial?.diffuse.contents = UIColor.white.withAlphaComponent(0)
+            }
         }
     }
     
@@ -254,13 +256,10 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     func addModelAtLocation(location: CGPoint, model: Model) {
         guard anchors.count > 0 else { print("anchors are not created yet!"); return }
         
-        let hitResults = sceneView.hitTest(location, types: .existingPlaneUsingExtent)
+        let hitResults = sceneView.hitTest(location, types: .existingPlane)
         guard let hitTestResult = hitResults.first else { return }
         
         let columns = hitTestResult.worldTransform.columns.3
-        let x = columns.x
-        let y = columns.y + 0.05
-        let z = columns.z
         
         guard let modelScene = SCNScene(named: model.path) else { return }
         let modelNode = SCNNode()
@@ -274,10 +273,13 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
             }
             modelNode.addChildNode(childNode)
         }
-
-        modelNode.position = SCNVector3(x,y,z)
-        sceneView.scene.rootNode.addChildNode(modelNode)
         currentNode = modelNode.childNode(withName: model.id, recursively: false)
+        let x = columns.x
+        let y = columns.y + 0.05
+        let z = columns.z + Float(getModelDimensions(currentNode).z / 2)
+        currentNode.position = SCNVector3(x,y,z)
+        
+        sceneView.scene.rootNode.addChildNode(modelNode)
         messageLabel.hide()
         confirmButton.isHidden = false
     }
@@ -289,7 +291,8 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         
         if hitResults.count > 0 {
             let result = hitResults.first!
-            let newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: node.position.y, z: result.worldTransform.columns.3.z)
+            var newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: node.position.y, z: result.worldTransform.columns.3.z)
+            newLocation.z += getModelDimensions(node).z / 2
             node.simdPosition = float3(newLocation.x, newLocation.y, newLocation.z)
         }
     }
@@ -339,6 +342,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     
     func setModel(model: Model) {
         self.currentModel = model
+        currentNode = nil
         messageLabel.show(message: TAP_MESSAGE + model.name + " model")
         isPlaneVisible = true
         updatePlaneVisibility()
