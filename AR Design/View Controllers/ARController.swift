@@ -55,7 +55,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     @IBOutlet weak var confirmButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
     
-    var models = [String]()
+    var modelNodes = [SCNNode]()
     var currentModel: Model?
     var currentNode: SCNNode!
     var firstAngleY: Float?
@@ -189,9 +189,12 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         if (currentNode != nil || currentModel != nil) { return }
         let location = press.location(in: sceneView)
         let node = getNodeAtLocation(location: location)
-//        if node != nil {
-//            updatePlaneVisibility(modelNode: node);
-//        }
+        if node != nil {
+            currentNode = node
+            confirmButton.isHidden = false
+            isPlaneVisible = true
+            updatePlaneVisibility();
+        }
     }
     
     @objc func rotateModel(_ gesture: UIRotationGestureRecognizer) {
@@ -199,7 +202,6 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         let rotation = Float(gesture.rotation)
 
         if gesture.state == .began {
-//            print(getModelDimensions(currentNode))
             firstAngleY = currentNode.eulerAngles.y
             currentNode.eulerAngles.y = firstAngleY! - rotation
         }
@@ -233,7 +235,16 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
             let result = hitResult.first!
             if let currentModel = result.node.geometry {
                 if !(currentModel is SCNPlane) {
-                    return result.node
+                    if modelNodes.first(where: {$0.name == result.node.name}) != nil {
+                        return result.node
+                    }
+                    for node in modelNodes {
+                        for child in node.childNodes {
+                            if child.name == result.node.name {
+                                return node
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -251,13 +262,22 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         let y = columns.y + 0.05
         let z = columns.z
         
-        guard let modelScene = SCNScene(named: model.path),
-            let modelNode = modelScene.rootNode.childNode(withName: model.id, recursively: false)
-            else { return }
-        
+        guard let modelScene = SCNScene(named: model.path) else { return }
+        let modelNode = SCNNode()
+        for childNode in modelScene.rootNode.childNodes {
+            for child in childNode.childNodes {
+                if (child.geometry != nil) {
+                    childNode.name = model.id
+                    modelNodes.append(childNode)
+                    break
+                }
+            }
+            modelNode.addChildNode(childNode)
+        }
+
         modelNode.position = SCNVector3(x,y,z)
         sceneView.scene.rootNode.addChildNode(modelNode)
-        currentNode = modelNode
+        currentNode = modelNode.childNode(withName: model.id, recursively: false)
         messageLabel.hide()
         confirmButton.isHidden = false
     }
@@ -265,27 +285,19 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     func updateNodeAtLocation(location: CGPoint, node: SCNNode) {
         guard anchors.count > 0 else { print("anchors are not created yet!"); return }
         
-        let hitResults = sceneView.hitTest(location, types: .existingPlaneUsingExtent)
+        let hitResults = sceneView.hitTest(location, types: .existingPlane)
         
         if hitResults.count > 0 {
             let result = hitResults.first!
-            var newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: node.position.y, z: result.worldTransform.columns.3.z)
-            print(newLocation.z)
-            print(getModelDimensions(node).z)
-
-            newLocation.z += getModelDimensions(node).z
-            print(newLocation.z)
-
+            let newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: node.position.y, z: result.worldTransform.columns.3.z)
             node.simdPosition = float3(newLocation.x, newLocation.y, newLocation.z)
-            
-//          updatePlaneVisibility()
         }
     }
     
     func getModelDimensions(_ node: SCNNode) -> SCNVector3 {
         let (minVec, maxVec) = node.boundingBox
-        let x = (maxVec.y - minVec.y) * node.scale.y
         let y = (maxVec.x - minVec.x) * node.scale.x
+        let x = (maxVec.y - minVec.y) * node.scale.y
         let z = (maxVec.z - minVec.z) * node.scale.z
         
         return SCNVector3(x: x, y: y, z: z)

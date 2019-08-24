@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "AR Design/View Controllers/ARController.swift"
-            timestampString = "588333836.327863"
+            timestampString = "588345874.4767669"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "223"
-            endingLineNumber = "223"
+            startingLineNumber = "226"
+            endingLineNumber = "226"
             landmarkName = "updatePlaneVisibility()"
             landmarkType = "7">
          </BreakpointContent>
