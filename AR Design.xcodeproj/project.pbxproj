@@ -11,13 +11,13 @@
 		8811EC1322DF369B004935E3 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 8811EC1222DF369B004935E3 /* art.scnassets */; };
 		8811EC1522DF369B004935E3 /* ARController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8811EC1422DF369B004935E3 /* ARController.swift */; };
 		8811EC1822DF369B004935E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8811EC1622DF369B004935E3 /* Main.storyboard */; };
-		8811EC1A22DF369C004935E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8811EC1922DF369C004935E3 /* Assets.xcassets */; };
 		8811EC1D22DF369C004935E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8811EC1B22DF369C004935E3 /* LaunchScreen.storyboard */; };
 		885239B522DF4D63005B95EC /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885239B422DF4D63005B95EC /* Menu.swift */; };
 		889A822C22E746C2005707DE /* ModelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889A822B22E746C2005707DE /* ModelNode.swift */; };
 		88D4D75422E6EF5400BA8514 /* ModelListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D4D75322E6EF5400BA8514 /* ModelListController.swift */; };
 		88D4D75722E6FBEE00BA8514 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D4D75622E6FBEE00BA8514 /* Model.swift */; };
 		88D4D75A22E705E800BA8514 /* ModelViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D4D75922E705E800BA8514 /* ModelViewCell.swift */; };
+		88FD6C6D2311A08C00CAF366 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88FD6C6C2311A08B00CAF366 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,7 +26,6 @@
 		8811EC1222DF369B004935E3 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		8811EC1422DF369B004935E3 /* ARController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARController.swift; sourceTree = "<group>"; };
 		8811EC1722DF369B004935E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		8811EC1922DF369C004935E3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8811EC1C22DF369C004935E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8811EC1E22DF369C004935E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		885239B422DF4D63005B95EC /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
@@ -34,6 +33,7 @@
 		88D4D75322E6EF5400BA8514 /* ModelListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelListController.swift; sourceTree = "<group>"; };
 		88D4D75622E6FBEE00BA8514 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		88D4D75922E705E800BA8514 /* ModelViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelViewCell.swift; sourceTree = "<group>"; };
+		88FD6C6C2311A08B00CAF366 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,8 +72,8 @@
 				8811EC1022DF369B004935E3 /* AppDelegate.swift */,
 				8811EC1222DF369B004935E3 /* art.scnassets */,
 				8811EC1622DF369B004935E3 /* Main.storyboard */,
-				8811EC1922DF369C004935E3 /* Assets.xcassets */,
 				8811EC1B22DF369C004935E3 /* LaunchScreen.storyboard */,
+				88FD6C6C2311A08B00CAF366 /* Assets.xcassets */,
 				8811EC1E22DF369C004935E3 /* Info.plist */,
 			);
 			path = "AR Design";
@@ -166,7 +166,7 @@
 			files = (
 				8811EC1322DF369B004935E3 /* art.scnassets in Resources */,
 				8811EC1D22DF369C004935E3 /* LaunchScreen.storyboard in Resources */,
-				8811EC1A22DF369C004935E3 /* Assets.xcassets in Resources */,
+				88FD6C6D2311A08C00CAF366 /* Assets.xcassets in Resources */,
 				8811EC1822DF369B004935E3 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

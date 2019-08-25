@@ -19,7 +19,6 @@ class ModelListController: UITableViewController{
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         loadModels()
@@ -29,8 +28,20 @@ class ModelListController: UITableViewController{
         var image = UIImage(named: "wooden-coffe-table")!
         var model = Model(id: "wooden-coffe-table", name: "Wooden Coffe Table", image: image, path: "art.scnassets/wooden-coffe-table.scn")!
         models.append(model)
-        image = UIImage(named: "coffe-table")!
-        model = Model(id: "coffe-table", name: "Coffe Table", image: image, path: "art.scnassets/coffe-table.scn")!
+        image = UIImage(named: "eames-chair")!
+        model = Model(id: "eames-chair", name: "Eames Chair", image: image, path: "art.scnassets/eames-chair.scn")!
+        models.append(model)
+        image = UIImage(named: "vitra-chair")!
+        model = Model(id: "vitra-chair", name: "Vitra Chair", image: image, path: "art.scnassets/vitra-chair.scn")!
+        models.append(model)
+        image = UIImage(named: "linda-coffee-table")!
+        model = Model(id: "linda-coffee-table", name: "Linda Coffee Table", image: image, path: "art.scnassets/linda-coffee-table.scn")!
+        models.append(model)
+        image = UIImage(named: "lova-bed")!
+        model = Model(id: "lova-bed", name: "Lova Bed", image: image, path: "art.scnassets/lova-bed.scn")!
+        models.append(model)
+        image = UIImage(named: "jean-armchair")!
+        model = Model(id: "jean-armchair", name: "Jean Armchair", image: image, path: "art.scnassets/jean-armchair.scn")!
         models.append(model)
         image = UIImage(named: "ship")!
         model = Model(id: "ship", name: "Ship", image: image, path: "art.scnassets/ship.scn")!
@@ -51,9 +62,9 @@ class ModelListController: UITableViewController{
             fatalError("The dequeued cell is not an instance of modelViewCell.")
         }
         let model = self.models[indexPath.row]
-        
         cell.nameLabel.text = model.name
         cell.photoView.image = model.image
+        cell.selectionStyle = .none
 
         return cell
     }
