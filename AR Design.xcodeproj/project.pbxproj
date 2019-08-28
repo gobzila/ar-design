@@ -12,8 +12,7 @@
 		8811EC1522DF369B004935E3 /* ARController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8811EC1422DF369B004935E3 /* ARController.swift */; };
 		8811EC1822DF369B004935E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8811EC1622DF369B004935E3 /* Main.storyboard */; };
 		8811EC1D22DF369C004935E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8811EC1B22DF369C004935E3 /* LaunchScreen.storyboard */; };
-		885239B522DF4D63005B95EC /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885239B422DF4D63005B95EC /* Menu.swift */; };
-		889A822C22E746C2005707DE /* ModelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889A822B22E746C2005707DE /* ModelNode.swift */; };
+		885239B522DF4D63005B95EC /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885239B422DF4D63005B95EC /* MenuController.swift */; };
 		88D4D75422E6EF5400BA8514 /* ModelListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D4D75322E6EF5400BA8514 /* ModelListController.swift */; };
 		88D4D75722E6FBEE00BA8514 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D4D75622E6FBEE00BA8514 /* Model.swift */; };
 		88D4D75A22E705E800BA8514 /* ModelViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D4D75922E705E800BA8514 /* ModelViewCell.swift */; };
@@ -28,8 +27,7 @@
 		8811EC1722DF369B004935E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8811EC1C22DF369C004935E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8811EC1E22DF369C004935E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		885239B422DF4D63005B95EC /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
-		889A822B22E746C2005707DE /* ModelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelNode.swift; sourceTree = "<group>"; };
+		885239B422DF4D63005B95EC /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		88D4D75322E6EF5400BA8514 /* ModelListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelListController.swift; sourceTree = "<group>"; };
 		88D4D75622E6FBEE00BA8514 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		88D4D75922E705E800BA8514 /* ModelViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelViewCell.swift; sourceTree = "<group>"; };
@@ -83,7 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				8811EC1422DF369B004935E3 /* ARController.swift */,
-				885239B422DF4D63005B95EC /* Menu.swift */,
+				885239B422DF4D63005B95EC /* MenuController.swift */,
 				88D4D75322E6EF5400BA8514 /* ModelListController.swift */,
 			);
 			path = "View Controllers";
@@ -93,7 +91,6 @@
 			isa = PBXGroup;
 			children = (
 				88D4D75622E6FBEE00BA8514 /* Model.swift */,
-				889A822B22E746C2005707DE /* ModelNode.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -183,8 +180,7 @@
 				88D4D75422E6EF5400BA8514 /* ModelListController.swift in Sources */,
 				8811EC1122DF369B004935E3 /* AppDelegate.swift in Sources */,
 				88D4D75A22E705E800BA8514 /* ModelViewCell.swift in Sources */,
-				889A822C22E746C2005707DE /* ModelNode.swift in Sources */,
-				885239B522DF4D63005B95EC /* Menu.swift in Sources */,
+				885239B522DF4D63005B95EC /* MenuController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

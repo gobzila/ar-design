@@ -11,7 +11,7 @@ import SceneKit
 import ARKit
 import QuartzCore
 
-let DETECT_MESSAGE = "Wait for horizontal plane detection"
+let DETECT_MESSAGE = "Move the camera to detect the horizontal plane"
 let TAP_MESSAGE = "Tap to place "
 let SELECT_MESSAGE = "Select a model"
 let EDIT_MESSAGE = "(Edit Mode) Move or rotate the model"
@@ -66,6 +66,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     var anchors = [ARAnchor]()
     var planes = [SCNPlane]()
     var sceneLight:SCNLight!
+    var Y: Float?
     
     
     override func viewDidLoad() {
@@ -78,7 +79,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         // Show statistics such as fps and timing information
 //        sceneView.showsStatistics = true
         sceneView.autoenablesDefaultLighting = false
-//        sceneView.debugOptions = [.showWireframe, .showBoundingBoxes, ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
+        sceneView.debugOptions = [.showWireframe, .showBoundingBoxes, ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
         
         let longPressGesturerecogn = UILongPressGestureRecognizer(target: self, action: #selector(detectModel(press:)))
         longPressGesturerecogn.minimumPressDuration = 1
@@ -170,8 +171,6 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         updateNodeAtLocation(location: location!, node: currentNode)
     }
 
-    // MARK: - ARSCNViewDelegate
-    
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         if let estimate = self.sceneView.session.currentFrame?.lightEstimate {
             sceneLight.intensity = estimate.ambientIntensity
@@ -188,6 +187,8 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
             updatePlaneVisibility()
             
             let planeNode = SCNNode(geometry: planeGeometry)
+            print("plane Y")
+            print(planeAnchor.center.y)
             planeNode.position = SCNVector3(x: planeAnchor.center.x, y: 0, z: planeAnchor.center.z)
             planeNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2, 1, 0, 0)
             updatePlaneMaterial()
@@ -262,8 +263,8 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     
     func getModelDimensions(_ node: SCNNode) -> SCNVector3 {
         let (minVec, maxVec) = node.boundingBox
-        let y = (maxVec.x - minVec.x) * node.scale.x
-        let x = (maxVec.y - minVec.y) * node.scale.y
+        let x = (maxVec.x - minVec.x) * node.scale.x
+        let y = (maxVec.y - minVec.y) * node.scale.y
         let z = (maxVec.z - minVec.z) * node.scale.z
         
         return SCNVector3(x: x, y: y, z: z)
@@ -278,6 +279,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         for plane in planes {
             if isPlaneVisible {
                 plane.firstMaterial?.diffuse.contents = UIImage(named: "background")!.resizableImage(withCapInsets: .zero)
+                
             } else {
                 plane.firstMaterial?.diffuse.contents = UIColor.white.withAlphaComponent(0)
             }
@@ -319,16 +321,12 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         let modelNode = SCNNode()
         
         for childNode in modelScene.rootNode.childNodes {
-            print("------scene child")
-            print(childNode)
             if (childNode.geometry != nil) {
                 childNode.name = model.id
                 currentNode = childNode
                 modelNodes.append(childNode)
             } else {
                 for child in childNode.childNodes {
-                    print("------node child")
-                    print(childNode)
                     if (child.geometry != nil) {
                         childNode.name = model.id
                         currentNode = childNode
@@ -340,12 +338,9 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
             modelNode.addChildNode(childNode)
         }
         let x = columns.x
-        let y = columns.y
-        let z = columns.z + Float(getModelDimensions(currentNode).z / 2)
-        print("------node")
-        print(modelNode)
-        print("------current node")
-        print(currentNode)
+        let y = columns.y + 0.005
+        let z = columns.z
+        print("node y")
         currentNode.position = SCNVector3(x,y,z)
         
         sceneView.scene.rootNode.addChildNode(modelNode)
@@ -362,7 +357,16 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         if hitResults.count > 0 {
             let result = hitResults.first!
             var newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: node.position.y, z: result.worldTransform.columns.3.z)
-            newLocation.z += getModelDimensions(node).z / 2
+//            if newLocation.z < 0 {
+//                newLocation.z += getModelDimensions(node).z / 2
+//            } else {
+//                newLocation.z -= getModelDimensions(node).z / 2
+//            }
+//            if newLocation.x < 0 {
+//                newLocation.x += getModelDimensions(node).x / 2
+//            } else {
+//                newLocation.x -= getModelDimensions(node).x / 2
+//            }
             node.simdPosition = float3(newLocation.x, newLocation.y, newLocation.z)
         }
     }

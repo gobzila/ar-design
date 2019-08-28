@@ -25,27 +25,42 @@ class ModelListController: UITableViewController{
     }
     
     func loadModels() {
-        var image = UIImage(named: "wooden-coffe-table")!
-        var model = Model(id: "wooden-coffe-table", name: "Wooden Coffe Table", image: image, path: "art.scnassets/wooden-coffe-table.scn")!
-        models.append(model)
-        image = UIImage(named: "eames-chair")!
-        model = Model(id: "eames-chair", name: "Eames Chair", image: image, path: "art.scnassets/eames-chair.scn")!
+        var image = UIImage(named: "eames-chair")!
+        var model = Model(id: "eames-chair", name: "Eames Chair", image: image, path: "art.scnassets/eames-chair.scn")!
         models.append(model)
         image = UIImage(named: "vitra-chair")!
         model = Model(id: "vitra-chair", name: "Vitra Chair", image: image, path: "art.scnassets/vitra-chair.scn")!
         models.append(model)
+        image = UIImage(named: "jean-armchair")!
+        model = Model(id: "jean-armchair", name: "Jean Armchair", image: image, path: "art.scnassets/jean-armchair.scn")!
+        models.append(model)
+        image = UIImage(named: "m3-seater")!
+        model = Model(id: "m3-seater", name: "M3 Seater", image: image, path: "art.scnassets/m3-seater.scn")!
+        models.append(model)
+        image = UIImage(named: "wooden-coffe-table")!
+        model = Model(id: "wooden-coffe-table", name: "Wooden Coffe Table", image: image, path: "art.scnassets/wooden-coffe-table.scn")!
+        models.append(model)
         image = UIImage(named: "linda-coffee-table")!
         model = Model(id: "linda-coffee-table", name: "Linda Coffee Table", image: image, path: "art.scnassets/linda-coffee-table.scn")!
+        models.append(model)
+        image = UIImage(named: "tv-cabinet")!
+        model = Model(id: "tv-cabinet", name: "TV Cabinet", image: image, path: "art.scnassets/tv-cabinet.scn")!
+        models.append(model)
+        image = UIImage(named: "pandora-dressoir")!
+        model = Model(id: "pandora-dressoir", name: "Pandora Dressoir", image: image, path: "art.scnassets/pandora-dressoir.scn")!
+        models.append(model)
+        image = UIImage(named: "bookcase")!
+        model = Model(id: "bookcase", name: "Bookcase", image: image, path: "art.scnassets/bookcase.scn")!
+        models.append(model)
+        image = UIImage(named: "nightstand")!
+        model = Model(id: "nightstand", name: "Nightstand", image: image, path: "art.scnassets/nightstand.scn")!
         models.append(model)
         image = UIImage(named: "lova-bed")!
         model = Model(id: "lova-bed", name: "Lova Bed", image: image, path: "art.scnassets/lova-bed.scn")!
         models.append(model)
-        image = UIImage(named: "jean-armchair")!
-        model = Model(id: "jean-armchair", name: "Jean Armchair", image: image, path: "art.scnassets/jean-armchair.scn")!
-        models.append(model)
-        image = UIImage(named: "ship")!
-        model = Model(id: "ship", name: "Ship", image: image, path: "art.scnassets/ship.scn")!
-        models.append(model)
+        //        image = UIImage(named: "ship")!
+        //        model = Model(id: "ship", name: "Ship", image: image, path: "art.scnassets/ship.scn")!
+        //        models.append(model)
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
