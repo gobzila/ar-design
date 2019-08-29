@@ -10,7 +10,7 @@ import UIKit
 import SceneKit
 
 class ModelController: UIViewController {
-    weak var dataBackDelegate: DataBackDelegate?
+    weak var arController: DataBackDelegate?
 
     @IBOutlet weak var sceneView: SCNView!
     var model: Model?
@@ -50,13 +50,12 @@ class ModelController: UIViewController {
 
         initModel()
         initColors()
-        continueButton.applyDesign()
+        continueButton.applyDesign1()
     }
     
     func initModel() {
         guard let modelScene = SCNScene(named: model!.path) else { return }
         for childNode in modelScene.rootNode.childNodes {
-            print(childNode)
             if (childNode.geometry != nil) {
                 childNode.name = model?.id
                 modelNode = childNode
@@ -65,8 +64,6 @@ class ModelController: UIViewController {
                     if (child.geometry != nil) {
                         childNode.name = model?.id
                         modelNode = childNode
-                        print(child)
-//                        break
                     }
                 }
             }
@@ -100,7 +97,7 @@ class ModelController: UIViewController {
             return
         }
         let colorImage1 = UIImage(named: model!.colors![0])
-        color1.applyDesign()
+        color1.applyDesign1()
         color1.setBackgroundImage(colorImage1, for: .normal)
         if (model?.colors!.count)! < 2 {
             color2.isHidden = true
@@ -109,7 +106,7 @@ class ModelController: UIViewController {
             return
         }
         let colorImage2 = UIImage(named: model!.colors![1])
-        color2.applyDesign()
+        color2.applyDesign1()
         color2.setBackgroundImage(colorImage2, for: .normal)
         if (model?.colors!.count)! < 3 {
             color3.isHidden = true
@@ -117,24 +114,15 @@ class ModelController: UIViewController {
             return
         }
         let colorImage3 = UIImage(named: model!.colors![2])
-        color3.applyDesign()
+        color3.applyDesign1()
         color3.setBackgroundImage(colorImage3, for: .normal)
         if (model?.colors!.count)! < 4 {
             color4.isHidden = true
             return
         }
         let colorImage4 = UIImage(named: model!.colors![3])
-        color4.applyDesign()
+        color4.applyDesign1()
         color4.setBackgroundImage(colorImage4, for: .normal)
-    }
-    
-    func getModelDimensions(_ node: SCNNode) -> SCNVector3 {
-        let (minVec, maxVec) = node.boundingBox
-        let x = maxVec.x - minVec.x
-        let y = maxVec.y - minVec.y
-        let z = maxVec.z - minVec.z
-        
-        return SCNVector3(x: x, y: y, z: z)
     }
     
     @IBAction func changeWidth(_ sender: UISlider) {
@@ -169,7 +157,7 @@ class ModelController: UIViewController {
     }
     
     @IBAction func onContinueButtonPress(_ sender: UIButton) {
-        dataBackDelegate?.setModel(model: model!)
+        arController?.setModel(model: model!)
         navigationController?.popToRootViewController(animated: true)
     }
     
@@ -185,6 +173,7 @@ class ModelController: UIViewController {
     }
     
     func updateColor(color: String) {
+        model?.color = color
         if initialMaterials.count == 0 {
             if modelNode!.geometry != nil {
                 initialMaterials.append(modelNode!.geometry!.materials)
@@ -200,7 +189,6 @@ class ModelController: UIViewController {
         }
         
         if color == "default-texture" {
-            model?.color = nil
             var i = 0
             if modelNode!.geometry != nil {
                 initialMaterials.append(modelNode!.geometry!.materials)
@@ -217,7 +205,6 @@ class ModelController: UIViewController {
             let imageMaterial = SCNMaterial()
             imageMaterial.isDoubleSided = false
             imageMaterial.diffuse.contents = UIImage(named: color)
-            model?.color = color
             if modelNode!.geometry != nil {
                 modelNode!.geometry?.materials = [imageMaterial]
             }
@@ -229,16 +216,12 @@ class ModelController: UIViewController {
         }
     }
     
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        super.prepare(for: segue, sender: sender)
-//
-//        if segue.identifier == "EditModel" {
-//            guard let listController = segue.destination as? ModelListController else {
-//                fatalError("Unexpected destination: \(segue.destination)")
-//            }
-//
-//            listController.dataBackDelegate = self as? DataBackDelegate
-//        }
-//    }
+    func getModelDimensions(_ node: SCNNode) -> SCNVector3 {
+        let (minVec, maxVec) = node.boundingBox
+        let x = maxVec.x - minVec.x
+        let y = maxVec.y - minVec.y
+        let z = maxVec.z - minVec.z
+        
+        return SCNVector3(x: x, y: y, z: z)
+    }
 }

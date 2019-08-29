@@ -11,49 +11,23 @@ import SceneKit
 import ARKit
 import QuartzCore
 
-let DETECT_MESSAGE = "Move the camera to detect the horizontal plane"
-let TAP_MESSAGE = "Tap to place "
-let SELECT_MESSAGE = "Select a model"
-let EDIT_MESSAGE = "(Edit Mode) Move or rotate the model"
-
-
-extension UIButton {
-    func applyDesign(){
-        self.layer.backgroundColor = UIColor.white.cgColor
-        self.layer.cornerRadius = self.frame.height / 2;
-        self.setTitleColor(UIColor.black, for: .normal)
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowRadius = 4
-        self.layer.shadowOpacity = 0.6
-        self.layer.shadowOffset = CGSize(width: 0, height: 0)
-    }
-}
-
-extension UILabel {
-    func show(message: String) {
-        DispatchQueue.main.async {
-            self.text = message
-            self.isHidden = false
-        }
-    }
-    
-    func hide() {
-        self.text = ""
-        self.isHidden = true
-    }
-}
-
 public protocol DataBackDelegate: class {
     func setModel(model : Model)
 }
 
 class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     
+    let DETECT_MESSAGE = "Move the camera to detect the horizontal plane"
+    let TAP_MESSAGE = "Tap to place "
+    let SELECT_MESSAGE = "Select a model"
+    let EDIT_MESSAGE = "(Edit Mode) Move or rotate the model"
+    
     @IBOutlet weak var messageLabel: UILabel!
-    @IBOutlet var addButton: UIButton!
+    @IBOutlet weak var addButton: UIButton!
     @IBOutlet weak var homeButton: UIButton!
     @IBOutlet weak var confirmButton: UIButton!
     @IBOutlet weak var deleteButton: UIButton!
+    @IBOutlet weak var ssButton: UIButton!
     @IBOutlet var sceneView: ARSCNView!
     
     var modelNodes = [SCNNode]()
@@ -79,7 +53,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         // Show statistics such as fps and timing information
 //        sceneView.showsStatistics = true
         sceneView.autoenablesDefaultLighting = false
-        sceneView.debugOptions = [.showWireframe, .showBoundingBoxes, ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
+//        sceneView.debugOptions = [.showWireframe, .showBoundingBoxes, ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
         
         let longPressGesturerecogn = UILongPressGestureRecognizer(target: self, action: #selector(detectModel(press:)))
         longPressGesturerecogn.minimumPressDuration = 1
@@ -122,14 +96,15 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
     }
     
     func initializeComponents() {
-        addButton.applyDesign()
+        addButton.applyDesign1()
         addButton.isHidden = true
-        homeButton.applyDesign()
-        confirmButton.applyDesign()
+        homeButton.applyDesign1()
+        confirmButton.applyDesign1()
         confirmButton.isHidden = true
-        deleteButton.applyDesign()
+        deleteButton.applyDesign1()
         deleteButton.isHidden = true
-        
+        ssButton.applyDesign1()
+        ssButton.isHidden = true
         messageLabel.backgroundColor = UIColor(white: 1, alpha: 0.7)
         messageLabel.layer.cornerRadius = 10
         messageLabel.show(message: DETECT_MESSAGE)
@@ -142,6 +117,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         messageLabel.hide()
         confirmButton.isHidden = true
         deleteButton.isHidden = true
+        ssButton.isHidden = false
     }
     
     @IBAction func onDeleteButtonPress(_ sender: Any) {
@@ -152,6 +128,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         messageLabel.hide()
         confirmButton.isHidden = true
         deleteButton.isHidden = true
+        ssButton.isHidden = false
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -160,7 +137,6 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         let touch = touches.first
         let location = touch?.location(in: sceneView)
         addModelAtLocation(location: location!, model: currentModel!)
-        currentModel = nil
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -187,8 +163,6 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
             updatePlaneVisibility()
             
             let planeNode = SCNNode(geometry: planeGeometry)
-            print("plane Y")
-            print(planeAnchor.center.y)
             planeNode.position = SCNVector3(x: planeAnchor.center.x, y: 0, z: planeAnchor.center.z)
             planeNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2, 1, 0, 0)
             updatePlaneMaterial()
@@ -198,7 +172,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
             if anchors.count == 1 {
                 DispatchQueue.main.async {
                     self.addButton.isHidden = false
-                    self.messageLabel.show(message: SELECT_MESSAGE)
+                    self.messageLabel.show(message: self.SELECT_MESSAGE)
                 }
             }
         }
@@ -230,6 +204,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
             currentNode = node
             confirmButton.isHidden = false
             deleteButton.isHidden = false
+            ssButton.isHidden = true
             isPlaneVisible = true
             updatePlaneVisibility();
             messageLabel.show(message: EDIT_MESSAGE)
@@ -253,10 +228,13 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         }
     }
     
-    func updateModelColor(color: String) {
+    func updateModelColor(color: String?) {
+        if color == "default-texture" {
+            return
+        }
         let imageMaterial = SCNMaterial()
         imageMaterial.isDoubleSided = false
-        imageMaterial.diffuse.contents = UIImage(named: color)
+        imageMaterial.diffuse.contents = UIImage(named: color!)
         if currentNode!.geometry != nil {
         currentNode!.geometry?.materials = [imageMaterial]
         }
@@ -275,7 +253,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         updatePlaneVisibility()
     }
     
-    func getModelDimensions(_ node: SCNNode) -> SCNVector3 {
+    func getNodeDimensions(_ node: SCNNode) -> SCNVector3 {
         let (minVec, maxVec) = node.boundingBox
         let x = (maxVec.x - minVec.x) * node.scale.x
         let y = (maxVec.y - minVec.y) * node.scale.y
@@ -354,10 +332,13 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         let x = columns.x
         let y = columns.y + 0.005
         let z = columns.z
-        print("node y")
         currentNode.position = SCNVector3(x,y,z)
+        currentNode.scale.x = currentNode.scale.x * (currentModel?.scale.x)!
+        currentNode.scale.y = currentNode.scale.y * (currentModel?.scale.y)!
+        currentNode.scale.z = currentNode.scale.z * (currentModel?.scale.z)!
         updateModelColor(color: model.color!)
         sceneView.scene.rootNode.addChildNode(modelNode)
+        currentModel = nil
         messageLabel.show(message: EDIT_MESSAGE)
         confirmButton.isHidden = false
         deleteButton.isHidden = false
@@ -367,37 +348,11 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         guard anchors.count > 0 else { print("anchors are not created yet!"); return }
         
         let hitResults = sceneView.hitTest(location, types: .existingPlane)
-        
         if hitResults.count > 0 {
             let result = hitResults.first!
-            var newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: node.position.y, z: result.worldTransform.columns.3.z)
-//            if newLocation.z < 0 {
-//                newLocation.z += getModelDimensions(node).z / 2
-//            } else {
-//                newLocation.z -= getModelDimensions(node).z / 2
-//            }
-//            if newLocation.x < 0 {
-//                newLocation.x += getModelDimensions(node).x / 2
-//            } else {
-//                newLocation.x -= getModelDimensions(node).x / 2
-//            }
+            let newLocation = SCNVector3(x: result.worldTransform.columns.3.x, y: node.position.y, z: result.worldTransform.columns.3.z)
             node.simdPosition = float3(newLocation.x, newLocation.y, newLocation.z)
         }
-    }
-    
-    func session(_ session: ARSession, didFailWithError error: Error) {
-        // Present an error message to the user
-        
-    }
-    
-    func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        
-    }
-    
-    func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required
-        
     }
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -408,8 +363,45 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
             guard let listController = segue.destination as? ModelListController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
-            
-            listController.dataBackDelegate = self
+            listController.arController = self
+        }
+    }
+    
+    public var screenWidth: CGFloat {
+        return UIScreen.main.bounds.width
+    }
+    
+    public var screenHeight: CGFloat {
+        return UIScreen.main.bounds.height
+    }
+    
+    func snapshot(of rect: CGRect? = nil) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(self.sceneView.bounds.size, self.sceneView.isOpaque, 0)
+        self.sceneView.drawHierarchy(in: self.sceneView.bounds, afterScreenUpdates: true)
+        let fullImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        guard let image = fullImage, let rect = rect else { return fullImage }
+        let scale = image.scale
+        let scaledRect = CGRect(x: rect.origin.x * scale, y: rect.origin.y * scale, width: rect.size.width * scale, height: rect.size.height * scale)
+        guard let cgImage = image.cgImage?.cropping(to: scaledRect) else { return nil }
+        return UIImage(cgImage: cgImage, scale: scale, orientation: .up)
+    }
+    
+    @IBAction func takeScreenShot(_ sender: UIButton) {
+        let screenShot = snapshot(of: CGRect(x: 0, y: 60, width: screenWidth, height: screenHeight - 60))
+        UIImageWriteToSavedPhotosAlbum(screenShot!, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+
+    }
+    
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+        } else {
+            let ac = UIAlertController(title: "Saved", message: "Image saved to your photos.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
         }
     }
 }

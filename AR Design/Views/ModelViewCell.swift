@@ -8,18 +8,6 @@
 
 import UIKit
 
-extension UIButton {
-    func applyUseDesign(){
-        self.layer.backgroundColor = UIColor.black.cgColor
-        self.layer.cornerRadius = self.frame.height / 2;
-        self.setTitleColor(UIColor.white, for: .normal)
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowRadius = 4
-        self.layer.shadowOpacity = 0.6
-        self.layer.shadowOffset = CGSize(width: 0, height: 0)
-    }
-}
-
 class ModelViewCell: UITableViewCell {
     @IBOutlet weak var useButton: UIButton!
     @IBOutlet weak var nameLabel: UILabel!
@@ -27,14 +15,11 @@ class ModelViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        useButton.applyUseDesign()
+        useButton.applyDesign2()
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
-        // Configure the view for the selected state
     }
-    
 }
 

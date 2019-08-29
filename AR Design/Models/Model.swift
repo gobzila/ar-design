@@ -30,6 +30,7 @@ public class Model: NSObject {
         self.name = name
         self.image = image
         self.path = path
+        self.color = "default-texture"
     }
     
     init?(id: String, name: String, image: UIImage, path: String, colors: [String]) {
@@ -38,6 +39,7 @@ public class Model: NSObject {
         self.image = image
         self.path = path
         self.colors = colors
+        self.color = "default-texture"
     }
     
 //    public func encode(with coder: NSCoder) {

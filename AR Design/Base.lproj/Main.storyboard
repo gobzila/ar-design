@@ -96,6 +96,17 @@
                                     <action selector="onDeleteButtonPress:" destination="BV1-FR-VrT" eventType="touchUpInside" id="Jx8-Po-8qy"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8uC-ls-tpH">
+                                <rect key="frame" x="122" y="600" width="131" height="36"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="16"/>
+                                <color key="tintColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
+                                <state key="normal" title="Screenshot"/>
+                                <connections>
+                                    <action selector="takeScreenShot:" destination="BV1-FR-VrT" eventType="touchUpInside" id="kAY-Q7-U54"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -121,6 +132,7 @@
                         <outlet property="homeButton" destination="prR-Y9-af6" id="q1L-A1-aLk"/>
                         <outlet property="messageLabel" destination="Yee-3T-5n9" id="Hdi-sv-Vbo"/>
                         <outlet property="sceneView" destination="BrB-h1-WRS" id="aC7-X9-xfV"/>
+                        <outlet property="ssButton" destination="8uC-ls-tpH" id="UTy-jN-edj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>

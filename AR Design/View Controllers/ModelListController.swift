@@ -10,13 +10,12 @@ import UIKit
 import SceneKit
 
 class ModelListController: UITableViewController{
-    weak var dataBackDelegate: DataBackDelegate?
+    weak var arController: DataBackDelegate?
     var selectedModel: Model?
     private var models = [Model]()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
 
@@ -87,13 +86,10 @@ class ModelListController: UITableViewController{
     }
     
     @IBAction func buttonPressed(_ sender: UIButton) {
-        
         let button = sender
         let cell = button.superview!.superview! as! ModelViewCell
         let indexPath = tableView.indexPath(for: cell)
         selectedModel = models[indexPath!.row]
-//        dataBackDelegate?.setModel(model: selectedModel)
-//        navigationController?.popViewController(animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -103,9 +99,8 @@ class ModelListController: UITableViewController{
             guard let modelController = segue.destination as? ModelController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
-            
             modelController.model = selectedModel
-            modelController.dataBackDelegate = dataBackDelegate
+            modelController.arController = arController
         }
     }
     

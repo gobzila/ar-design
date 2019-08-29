@@ -21,6 +21,6 @@ class MenuController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        continueButton.applyDesign()
+        continueButton.applyDesign1()
     }
 }
