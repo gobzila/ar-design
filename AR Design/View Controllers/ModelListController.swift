@@ -11,6 +11,7 @@ import SceneKit
 
 class ModelListController: UITableViewController{
     weak var dataBackDelegate: DataBackDelegate?
+    var selectedModel: Model?
     private var models = [Model]()
     
     override func viewWillAppear(_ animated: Bool) {
@@ -26,7 +27,8 @@ class ModelListController: UITableViewController{
     
     func loadModels() {
         var image = UIImage(named: "eames-chair")!
-        var model = Model(id: "eames-chair", name: "Eames Chair", image: image, path: "art.scnassets/eames-chair.scn")!
+        var colors = ["default-texture", "aluminium", "black-texture"]
+        var model = Model(id: "eames-chair", name: "Eames Chair", image: image, path: "art.scnassets/eames-chair.scn", colors: colors)!
         models.append(model)
         image = UIImage(named: "vitra-chair")!
         model = Model(id: "vitra-chair", name: "Vitra Chair", image: image, path: "art.scnassets/vitra-chair.scn")!
@@ -58,9 +60,9 @@ class ModelListController: UITableViewController{
         image = UIImage(named: "lova-bed")!
         model = Model(id: "lova-bed", name: "Lova Bed", image: image, path: "art.scnassets/lova-bed.scn")!
         models.append(model)
-        //        image = UIImage(named: "ship")!
-        //        model = Model(id: "ship", name: "Ship", image: image, path: "art.scnassets/ship.scn")!
-        //        models.append(model)
+                image = UIImage(named: "ship")!
+                model = Model(id: "ship", name: "Ship", image: image, path: "art.scnassets/ship.scn")!
+                models.append(model)
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -89,9 +91,22 @@ class ModelListController: UITableViewController{
         let button = sender
         let cell = button.superview!.superview! as! ModelViewCell
         let indexPath = tableView.indexPath(for: cell)
-        let selectedModel = models[indexPath!.row]
-        dataBackDelegate?.setModel(model: selectedModel)
-        navigationController?.popViewController(animated: true)
+        selectedModel = models[indexPath!.row]
+//        dataBackDelegate?.setModel(model: selectedModel)
+//        navigationController?.popViewController(animated: true)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        
+        if segue.identifier == "EditModel" {
+            guard let modelController = segue.destination as? ModelController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            modelController.model = selectedModel
+            modelController.dataBackDelegate = dataBackDelegate
+        }
     }
     
 }

@@ -253,6 +253,20 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         }
     }
     
+    func updateModelColor(color: String) {
+        let imageMaterial = SCNMaterial()
+        imageMaterial.isDoubleSided = false
+        imageMaterial.diffuse.contents = UIImage(named: color)
+        if currentNode!.geometry != nil {
+        currentNode!.geometry?.materials = [imageMaterial]
+        }
+        for childNode in currentNode!.childNodes {
+            if childNode.geometry != nil {
+            childNode.geometry?.materials = [imageMaterial]
+            }
+        }
+    }
+    
     func setModel(model: Model) {
         self.currentModel = model
         currentNode = nil
@@ -342,7 +356,7 @@ class ARController: UIViewController, ARSCNViewDelegate, DataBackDelegate {
         let z = columns.z
         print("node y")
         currentNode.position = SCNVector3(x,y,z)
-        
+        updateModelColor(color: model.color!)
         sceneView.scene.rootNode.addChildNode(modelNode)
         messageLabel.show(message: EDIT_MESSAGE)
         confirmButton.isHidden = false
